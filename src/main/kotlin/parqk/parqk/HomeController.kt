@@ -45,14 +45,13 @@ open class HomeController @Autowired constructor(private val idGenerator: IdGene
         return dt
     }
 
-    @RequestMapping("/remote-par")
-    fun remoteCallPar(): String {
+    @RequestMapping("/complex-query")
+    open fun complexQuery(): String {
         val t0 = System.nanoTime()
 
-        val r1 = makeCall()
-        val r2 = makeCall()
-        val r3 = makeCall()
-        CompletableFuture.allOf(r1, r2, r3).join()
+        var result1 = em.createNativeQuery("SELECT _accession_key, _refs_key FROM mgd.acc_accessionreference TABLESAMPLE SYSTEM (0.01)").getResultList().get(0)
+        var result2 = em.createNativeQuery("SELECT _accession_key, _refs_key FROM mgd.acc_accessionreference TABLESAMPLE SYSTEM (0.01)").getResultList().get(0)
+        var result3 = em.createNativeQuery("SELECT _accession_key, _refs_key FROM mgd.acc_accessionreference TABLESAMPLE SYSTEM (0.01)").getResultList().get(0)
 
         val t1 = System.nanoTime()
         val dt = "Elapsed time: " + (t1 - t0) + " ns"
